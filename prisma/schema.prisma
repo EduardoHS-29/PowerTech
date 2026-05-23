@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  nome      String
+  email     String   @unique
+  senha     String
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+enum TurbinaStatus {
+  ATIVA
+  INATIVA
+  MANUTENCAO
+}
+
+model Turbina {
+  id              String        @id @default(cuid())
+  nome            String
+  codigo          String        @unique
+  fabricante      String
+  modelo          String
+  potencia        Float
+  dataInstalacao  DateTime
+  dataFabricacao  DateTime
+  status          TurbinaStatus @default(ATIVA)
+  observacoes     String?       @db.Text
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  analises Analise[]
+  pas      Pa[]
+
+  @@index([status])
+  @@index([codigo])
+  @@map("turbinas")
+}
+
+model Pa {
+  id                String    @id @default(cuid())
+  turbinaId         String
+  ordem             Int
+  codigo            String
+  modelo            String
+  dataUltimaAnalise DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  turbina Turbina @relation(fields: [turbinaId], references: [id], onDelete: Cascade)
+
+  @@unique([turbinaId, ordem])
+  @@map("pas")
+}
+
+enum AnaliseStatus {
+  PENDENTE
+  EM_ANDAMENTO
+  CONCLUIDA
+  CANCELADA
+}
+
+model Analise {
+  id          String        @id @default(cuid())
+  turbinaId   String
+  titulo      String
+  descricao   String        @db.Text
+  resultado   String?       @db.Text
+  status      AnaliseStatus @default(PENDENTE)
+  responsavel String
+  dataAnalise DateTime
+  observacoes String?       @db.Text
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  turbina Turbina @relation(fields: [turbinaId], references: [id], onDelete: Cascade)
+
+  @@index([turbinaId])
+  @@index([status])
+  @@index([dataAnalise])
+  @@map("analises")
+}

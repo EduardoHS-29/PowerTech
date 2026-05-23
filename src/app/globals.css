@@ -1,49 +1,155 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@import "tailwindcss";
+
+/* ── Tailwind theme extensions ────────────────────────────────────── */
+@theme {
+  /* Brand */
+  --color-primary:       #27C25A;
+  --color-primary-dark:  #002E0C;
+  --color-primary-light: #004832;
+
+  /* Breakpoints (aligned with design system) */
+  --breakpoint-xs: 0px;
+  --breakpoint-sm: 37.5rem;
+  --breakpoint-md: 60rem;
+  --breakpoint-lg: 80rem;
+  --breakpoint-xl: 120rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ── CSS Custom Properties ────────────────────────────────────────── */
+:root {
+  /* Surface */
+  --background:  #f9fafb;
+  --foreground:  #111827;
+
+  /* Brand gradient */
+  --gradient-primary: linear-gradient(163deg, #27C25A 0%, #004832 100%);
+  --gradient-primary-disabled: linear-gradient(135deg, #cccccc, #999999);
+
+  /* Border radii */
+  --radius-btn:     8px;
+  --radius-card:    12px;
+  --radius-input:   6px;
+  --radius-popover: 8px;
+
+  /* Multi-layer card shadow */
+  --shadow-card:
+    0px 16px 48px 0px rgba(17, 24, 39, 0.04),
+    0px 12px 24px 0px rgba(17, 24, 39, 0.04),
+    0px  6px  8px 0px rgba(17, 24, 39, 0.02),
+    0px  2px  3px 0px rgba(17, 24, 39, 0.02);
+
+  /* Transitions */
+  --transition-short:   0.1s;
+  --transition-default: 0.2s;
+  --transition-long:    0.64s;
+  --ease-default: cubic-bezier(0.46, 0.03, 0.52, 0.96);
+  --ease-nav:     cubic-bezier(0.40, 0.00, 0.20, 1.00);
+
+  /* Contextual (dark-mode ready) */
+  --tt-bg-color:          #ffffff;
+  --tt-border-color:      rgba(0, 0, 0, 0.12);
+  --tt-sidebar-bg-color:  #f8f8f8;
+  --tt-card-bg-color:     #ffffff;
+  --tt-card-border-color: rgba(0, 0, 0, 0.12);
+  --tt-scrollbar-color:   rgba(0, 0, 0, 0.24);
+  --tt-selection-color:   rgba(39, 194, 90, 0.2);
+}
+
+/* ── Base Styles ──────────────────────────────────────────────────── */
+@layer base {
+  html {
+    height: 100%;
+  }
+
+  html,
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  body {
+    min-height: 100%;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-inter), "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.3;
+    font-feature-settings: "salt";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ::selection {
+    background-color: var(--tt-selection-color);
   }
 }
 
-html {
-  height: 100%;
+/* ── Scrollbar ────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+::-webkit-scrollbar:hover {
+  background: rgba(0, 0, 0, 0.06);
 }
 
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 20px;
+  background-clip: content-box;
+  background-color: rgba(0, 0, 0, 0.24);
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+::-webkit-scrollbar-thumb:active {
+  background-color: rgba(0, 0, 0, 0.48);
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* ── Keyframes ────────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+@keyframes zoomIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+@keyframes slideFromTop {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(0); }
+}
+
+/* ── Component classes ────────────────────────────────────────────── */
+@layer components {
+  /* Primary gradient button — used by Button variant="primary" */
+  .btn-gradient-primary {
+    background: var(--gradient-primary);
+    color: #ffffff;
+  }
+
+  .btn-gradient-primary:hover:not(:disabled) {
+    filter: brightness(1.08);
+  }
+
+  .btn-gradient-primary:disabled {
+    background: var(--gradient-primary-disabled);
+    color: #ffffff;
+    cursor: not-allowed;
+    opacity: 1;
   }
 }
