@@ -108,7 +108,7 @@ Abra o `.env` e ajuste as credenciais do seu MySQL:
 DATABASE_URL="mysql://root:root@localhost:3306/powertech"
 
 # Chave secreta para assinar os tokens JWT (mínimo 32 caracteres)
-AUTH_SECRET="powertech-super-secret-key-troque-em-producao-32ch"
+AUTH_SECRET="powertech-super-secret-key-32cha"
 
 AUTH_SESSION_MAX_AGE=86400
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
