@@ -15,8 +15,6 @@ export async function createAnaliseAction(
   const raw = {
     turbinaId: formData.get("turbinaId"),
     titulo: formData.get("titulo"),
-    descricao: formData.get("descricao"),
-    resultado: formData.get("resultado") || undefined,
     status: formData.get("status"),
     responsavel: formData.get("responsavel"),
     dataAnalise: formData.get("dataAnalise"),
@@ -53,8 +51,6 @@ export async function updateAnaliseAction(
   const raw = {
     turbinaId: formData.get("turbinaId"),
     titulo: formData.get("titulo"),
-    descricao: formData.get("descricao"),
-    resultado: formData.get("resultado") || undefined,
     status: formData.get("status"),
     responsavel: formData.get("responsavel"),
     dataAnalise: formData.get("dataAnalise"),

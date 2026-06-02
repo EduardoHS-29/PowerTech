@@ -4,9 +4,12 @@ import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { analiseService } from "@/lib/services/analise/analise.service";
+import { ocorrenciaService } from "@/lib/services/ocorrencia/ocorrencia.service";
 import {
   ANALISE_STATUS_LABEL,
   ANALISE_STATUS_COLOR,
+  OCORRENCIA_GRAVIDADE_COLOR,
+  OCORRENCIA_GRAVIDADE_LABEL,
   ROUTES,
 } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
@@ -38,6 +41,8 @@ export default async function AnaliseDetailPage({
   } catch {
     notFound();
   }
+
+  const ocorrencias = await ocorrenciaService.listByAnalise(id);
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -89,26 +94,6 @@ export default async function AnaliseDetailPage({
         ))}
       </div>
 
-      <Card>
-        <CardContent className="py-4">
-          <p className="text-xs font-medium uppercase tracking-wider text-gray-500">
-            Descrição
-          </p>
-          <p className="mt-2 text-sm text-gray-700">{analise.descricao}</p>
-        </CardContent>
-      </Card>
-
-      {analise.resultado && (
-        <Card>
-          <CardContent className="py-4">
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500">
-              Resultado
-            </p>
-            <p className="mt-2 text-sm text-gray-700">{analise.resultado}</p>
-          </CardContent>
-        </Card>
-      )}
-
       {analise.observacoes && (
         <Card>
           <CardContent className="py-4">
@@ -119,6 +104,69 @@ export default async function AnaliseDetailPage({
           </CardContent>
         </Card>
       )}
+
+      <Card>
+        <CardContent className="py-4">
+          <p className="mb-4 text-xs font-medium uppercase tracking-wider text-gray-500">
+            Ocorrências
+          </p>
+
+          {ocorrencias.length === 0 ? (
+            <p className="py-4 text-center text-sm text-gray-400">
+              Nenhuma ocorrência registrada.
+            </p>
+          ) : (
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-gray-200 bg-gray-50">
+                    <th className="px-4 py-3 font-medium text-gray-600">
+                      Tipo de Ocorrência
+                    </th>
+                    <th className="px-4 py-3 font-medium text-gray-600">
+                      Cód. da Pá
+                    </th>
+                    <th className="px-4 py-3 font-medium text-gray-600">
+                      Gravidade
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {ocorrencias.map((oc) => {
+                    const tipoLabel =
+                      oc.tipo === "Outras" && oc.descricaoOutras
+                        ? oc.descricaoOutras
+                        : oc.tipo;
+                    return (
+                      <tr key={oc.id} className="hover:bg-gray-50">
+                        <td className="max-w-xs px-4 py-3">
+                          <span className="line-clamp-2 text-gray-700">
+                            {tipoLabel}
+                          </span>
+                          {oc.tipo === "Outras" && oc.descricaoOutras && (
+                            <span className="text-xs text-gray-400">Outras</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="font-mono text-xs font-medium text-gray-700">
+                            {oc.pa.codigo}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <Badge className={OCORRENCIA_GRAVIDADE_COLOR[oc.gravidade]}>
+                            {oc.gravidade} —{" "}
+                            {OCORRENCIA_GRAVIDADE_LABEL[oc.gravidade]}
+                          </Badge>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -161,6 +161,13 @@ export const turbinaRepository = {
     await prisma.turbina.delete({ where: { id } });
   },
 
+  async updatePaDataUltimaAnalise(paId: string, date: Date): Promise<void> {
+    await prisma.pa.update({
+      where: { id: paId },
+      data: { dataUltimaAnalise: date },
+    });
+  },
+
   async countByStatus(): Promise<Record<TurbinaStatus, number>> {
     const result = await prisma.turbina.groupBy({
       by: ["status"],

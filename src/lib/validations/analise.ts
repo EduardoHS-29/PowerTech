@@ -7,11 +7,6 @@ export const analiseSchema = z.object({
     .string()
     .min(1, "Título é obrigatório")
     .max(200, "Título deve ter no máximo 200 caracteres"),
-  descricao: z
-    .string()
-    .min(1, "Descrição é obrigatória")
-    .max(5000, "Descrição muito longa"),
-  resultado: z.string().max(5000, "Resultado muito longo").optional(),
   status: z.nativeEnum(AnaliseStatus, { message: "Status inválido" }),
   responsavel: z
     .string()

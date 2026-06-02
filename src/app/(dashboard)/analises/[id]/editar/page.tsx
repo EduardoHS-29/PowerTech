@@ -5,6 +5,8 @@ import { AnaliseForm } from "@/components/forms/analise-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { analiseService } from "@/lib/services/analise/analise.service";
 import { turbinaService } from "@/lib/services/turbina/turbina.service";
+import { turbinaRepository } from "@/lib/repositories/turbina/turbina.repository";
+import { ocorrenciaService } from "@/lib/services/ocorrencia/ocorrencia.service";
 import { ROUTES } from "@/lib/constants";
 
 interface Props {
@@ -31,7 +33,17 @@ export default async function AnaliseEditarPage({ params }: Props) {
     notFound();
   }
 
-  const turbinas = await turbinaService.getForSelect();
+  const [turbinas, turbina, ocorrencias] = await Promise.all([
+    turbinaService.getForSelect(),
+    turbinaRepository.findById(analise.turbinaId),
+    ocorrenciaService.listByAnalise(id),
+  ]);
+
+  const turbinaPas = (turbina?.pas ?? []).map((p) => ({
+    id: p.id,
+    codigo: p.codigo,
+    ordem: p.ordem,
+  }));
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -52,7 +64,12 @@ export default async function AnaliseEditarPage({ params }: Props) {
 
       <Card>
         <CardContent>
-          <AnaliseForm analise={analise} turbinas={turbinas} />
+          <AnaliseForm
+            analise={analise}
+            turbinas={turbinas}
+            turbinaPas={turbinaPas}
+            ocorrencias={ocorrencias}
+          />
         </CardContent>
       </Card>
     </div>

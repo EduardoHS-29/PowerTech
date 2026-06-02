@@ -57,7 +57,8 @@ model Pa {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
-  turbina Turbina @relation(fields: [turbinaId], references: [id], onDelete: Cascade)
+  turbina     Turbina      @relation(fields: [turbinaId], references: [id], onDelete: Cascade)
+  ocorrencias Ocorrencia[]
 
   @@unique([turbinaId, ordem])
   @@map("pas")
@@ -74,8 +75,6 @@ model Analise {
   id          String        @id @default(cuid())
   turbinaId   String
   titulo      String
-  descricao   String        @db.Text
-  resultado   String?       @db.Text
   status      AnaliseStatus @default(PENDENTE)
   responsavel String
   dataAnalise DateTime
@@ -83,10 +82,28 @@ model Analise {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
-  turbina Turbina @relation(fields: [turbinaId], references: [id], onDelete: Cascade)
+  turbina     Turbina      @relation(fields: [turbinaId], references: [id], onDelete: Cascade)
+  ocorrencias Ocorrencia[]
 
   @@index([turbinaId])
   @@index([status])
   @@index([dataAnalise])
   @@map("analises")
+}
+
+model Ocorrencia {
+  id              String   @id @default(cuid())
+  analiseId       String
+  paId            String
+  tipo            String
+  descricaoOutras String?  @db.Text
+  gravidade       Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  analise Analise @relation(fields: [analiseId], references: [id], onDelete: Cascade)
+  pa      Pa      @relation(fields: [paId], references: [id])
+
+  @@index([analiseId])
+  @@map("ocorrencias")
 }

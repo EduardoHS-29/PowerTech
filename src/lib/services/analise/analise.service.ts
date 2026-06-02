@@ -38,7 +38,7 @@ export const analiseService = {
   },
 
   async getRecentForDashboard() {
-    return analiseRepository.findRecent(5);
+    return analiseRepository.findRecentWithGravidade(5);
   },
 
   async getDashboardStats() {

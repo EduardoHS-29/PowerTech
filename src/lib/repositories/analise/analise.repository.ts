@@ -11,8 +11,6 @@ import type { AnaliseInput } from "@/lib/validations/analise";
 const analiseSelect = {
   id: true,
   titulo: true,
-  descricao: true,
-  resultado: true,
   status: true,
   responsavel: true,
   dataAnalise: true,
@@ -27,6 +25,29 @@ const analiseSelect = {
 
 export type AnaliseRow = Prisma.AnaliseGetPayload<{
   select: typeof analiseSelect;
+}>;
+
+const analiseRecentSelect = {
+  id: true,
+  titulo: true,
+  status: true,
+  responsavel: true,
+  dataAnalise: true,
+  createdAt: true,
+  updatedAt: true,
+  turbinaId: true,
+  turbina: {
+    select: { id: true, nome: true, codigo: true },
+  },
+  ocorrencias: {
+    select: { gravidade: true },
+    orderBy: { gravidade: "desc" as const },
+    take: 1,
+  },
+} satisfies Prisma.AnaliseSelect;
+
+export type AnaliseRecentRow = Prisma.AnaliseGetPayload<{
+  select: typeof analiseRecentSelect;
 }>;
 
 export const analiseRepository = {
@@ -97,6 +118,14 @@ export const analiseRepository = {
       orderBy: { createdAt: "desc" },
       take: limit,
       select: analiseSelect,
+    });
+  },
+
+  async findRecentWithGravidade(limit = 5): Promise<AnaliseRecentRow[]> {
+    return prisma.analise.findMany({
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      select: analiseRecentSelect,
     });
   },
 
